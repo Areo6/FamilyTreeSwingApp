@@ -9,3 +9,5 @@ nbdist/
 .nb-gradle/
 
 # End of https://www.gitignore.io/api/netbeans
+/CustomerLIbrary/nbproject/private/
+/PersonLibrary/nbproject/private/

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: persistence
+OpenIDE-Module-Localizing-Bundle: persistence/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
