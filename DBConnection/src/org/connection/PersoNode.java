@@ -10,12 +10,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.nodes.AbstractNode;
+import org.openide.LifecycleManager;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.WeakListeners;
 import org.openide.util.lookup.Lookups;
 import org.person.Person;
+import org.person.ftm.db.FamilyTreeManagerDB;
+import org.person.ftm.db.PersonDB;
 
 /**
  *
@@ -24,18 +28,20 @@ import org.person.Person;
 @NbBundle.Messages({
     "HINT_PersonNode=Person"
 })
-public class PersoNode extends BeanNode implements PropertyChangeListener{
+public class PersoNode extends BeanNode<PersonDB> implements PropertyChangeListener{
     private static final Logger logger = Logger.getLogger(PersoNode.class.getName());
-    public PersoNode(Person person) throws IntrospectionException{
-        super(Children.LEAF);
+    public PersoNode(PersonDB person) throws IntrospectionException{
+        super(person,Children.LEAF,Lookups.singleton(person));
         setIconBaseWithExtension("org/connection/resources/personIcon.png");
        // setName(String.valueOf(person.getId()));
         setDisplayName(person.getName()+" "+person.getMiddlename());
         setShortDescription(Bundle.HINT_PersonNode());
         logger.log(Level.INFO, "Creating new PersonNode for {0}", person);
         
+         
+        
        
-    
+        
         
     }
 
@@ -56,9 +62,22 @@ public class PersoNode extends BeanNode implements PropertyChangeListener{
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        Person person=(Person) evt.getSource();
+        PersonDB person=(PersonDB) evt.getSource();
         logger.log(Level.INFO, "PropChangeListener for {0}", person);
         fireDisplayNameChange(null,getDisplayName());
     }
+     private final PropertyChangeListener propListener =
+                     (PropertyChangeEvent evt) -> {
+        PersonDB person = (PersonDB) evt.getSource();
+        FamilyTreeManagerDB ftm = Lookup.getDefault().lookup(
+                                    FamilyTreeManagerDB.class);
+        if (ftm == null) {
+            logger.log(Level.SEVERE, "Cannot get FamilyTreeManager object");
+            LifecycleManager.getDefault().exit();
+        } else {
+            ftm.updatePerson(person);
+            fireDisplayNameChange(null, getDisplayName());
+        }
+    };
     
 }

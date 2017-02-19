@@ -21,7 +21,9 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.WindowManager;
 import org.person.Person;
+import org.person.ftm.db.PersonDB;
 
 /**
  * Top component which displays something.
@@ -35,7 +37,7 @@ import org.person.Person;
         iconBase = "org/connection/personIcon.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "explorer", openAtStartup = true)
+@TopComponent.Registration(mode = "editor", openAtStartup = true)
 @ActionID(category = "Window", id = "org.connection.DBConnectionTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -57,7 +59,7 @@ public final class DBConnectionTopComponent extends TopComponent implements Expl
         
         EntityManager entityManager = Persistence.createEntityManagerFactory("PersoLibraryPU").createEntityManager();
         Query query = entityManager.createNamedQuery("Person.findAll");
-        List<Person> resultList = query.getResultList();
+        List<PersonDB> resultList = query.getResultList();
         //for (Person c : resultList) {
         //jTextArea1.append(c.getName() + " (" + c.getMiddlename()+ ")" + "\n");
 //}
@@ -66,6 +68,11 @@ public final class DBConnectionTopComponent extends TopComponent implements Expl
         add(view, BorderLayout.CENTER);
         associateLookup(ExplorerUtils.createLookup(em, this.getActionMap()));
         //em.setRootContext(new RootNode());
+        
+        TopComponent tc=WindowManager.getDefault().findTopComponent("properties");
+        if(tc!=null){
+            tc.open();
+        }
         
         
 

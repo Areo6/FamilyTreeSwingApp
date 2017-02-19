@@ -11,3 +11,7 @@ nbdist/
 # End of https://www.gitignore.io/api/netbeans
 /CustomerLIbrary/nbproject/private/
 /PersonLibrary/nbproject/private/
+/FamyTreeModel/nbproject/private/
+/PersonEditor/nbproject/private/
+/GenderViewer/nbproject/private/
+/DBConnection/nbproject/private/
